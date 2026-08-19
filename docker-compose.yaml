@@ -4,17 +4,9 @@ services:
     container_name: ollama
     restart: unless-stopped
     ports:
-      - "11434:11434"   # Ollama API
+      - "11434:11434"
     volumes:
       - ollama_data:/root/.ollama
-    # Uncomment if using a GPU EC2 instance
-    # deploy:
-    #   resources:
-    #     reservations:
-    #       devices:
-    #         - driver: nvidia
-    #           count: all
-    #           capabilities: [gpu]
     healthcheck:
       test: ["CMD", "ollama", "list"]
       interval: 15s
@@ -27,10 +19,10 @@ services:
     container_name: ollama_api
     restart: unless-stopped
     ports:
-      - "8000:8000"   # FastAPI service
+      - "8000:8000"
     environment:
-      - OLLAMA_BASE_URL=http://ollama:11434
-      - OLLAMA_MODEL=${OLLAMA_MODEL:-llama3.2}
+      OLLAMA_BASE_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-llama3.2}
     depends_on:
       ollama:
         condition: service_started
